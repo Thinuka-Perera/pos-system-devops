@@ -56,7 +56,7 @@ const deleteCustomer = async (req,resp) =>{
 const findCustomerById = async (req,resp) =>{
 
     try{
-        const selectedCustomer =  Customer.findOne({_id:req.params.id});
+        const selectedCustomer = await Customer.findOne({_id:req.params.id});
 
 
         if(!selectedCustomer) return resp.status(404).json({'message':'Not Found'});
