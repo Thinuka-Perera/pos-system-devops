@@ -66,12 +66,10 @@ const findCustomerById = async (req, resp) => {
 const loadAllCustomer = async (req, resp) => {
     try {
         console.log('🔍 loadAllCustomer called');
-        console.log('🔍 Request headers:', req.headers);
-        console.log('🔍 User email from token:', req.userEmail);
+        console.log('🔍 User email:', req.userEmail);
 
         const customers = await Customer.find();
-        console.log('✅ Loaded customers count:', customers.length);
-        console.log('✅ Customers:', JSON.stringify(customers, null, 2));
+        console.log('✅ Loaded customers:', customers.length);
 
         resp.status(200).json({
             message: 'Customer Data.',
@@ -79,10 +77,13 @@ const loadAllCustomer = async (req, resp) => {
         });
     } catch (e) {
         console.error('❌ loadAllCustomer error:', e);
+        console.error('❌ Error message:', e.message);
         console.error('❌ Error stack:', e.stack);
+
         resp.status(500).json({
             message: 'Customer find error',
-            error: e.message
+            error: e.message,  // Changed from e.toString()
+            stack: e.stack     // Add stack trace
         });
     }
 };
