@@ -8,6 +8,6 @@ router.post('/create',middleware,CustomerController.createCustomer);
 router.put('/update/:id',CustomerController.updateCustomer);
 router.delete('/delete/:id',CustomerController.deleteCustomer);
 router.get('/find-by-id/:id',CustomerController.findCustomerById);
-router.get('/load-All',CustomerController.loadAllCustomer);
+router.get('/load-all',CustomerController.loadAllCustomer);
 
 module.exports = router;

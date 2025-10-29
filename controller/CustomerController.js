@@ -1,85 +1,82 @@
 const Customer = require('../model/CustomerSchema');
 
-const createCustomer = async (req,resp) =>{
-  try{
-      const {name,address,salary,contact} = req.body;
-      const createdCustomer = new Customer({
-          name , address , salary , contact
-      });
-      await createdCustomer.save();
-      resp.status(201).json({message:'Customer Saved .'});
+const createCustomer = async (req, resp) => {
+    try {
+        const {name, address, salary, contact} = req.body;
+        const createdCustomer = new Customer({
+            name, address, salary, contact
+        });
+        await createdCustomer.save();
+        resp.status(201).json({message: 'Customer Saved.'});
 
-  }catch (e) {
-      resp.status(500).json({'message': 'Customer error',error:e});
-  }
-
-
-
-};
-
-const updateCustomer = async (req,resp) =>{
-
-    try{
-        const {name,address,salary,contact} = req.body;
-
-        const updatedData =  Customer.findByIdAndUpdate({_id:req.params.id},
-            {name:name,address:address,salary:salary,contact:contact},{new:true});
-
-        if(!updatedData) return resp.status(500).json({'message':'try Again'});
-
-        resp.status(201).json({message:'Customer Updated .'});
-
-    }catch (e) {
-        resp.status(500).json({'message': 'Customer updated error',error:e});
+    } catch (e) {
+        resp.status(500).json({'message': 'Customer error', error: e.message});
     }
-
 };
 
-const deleteCustomer = async (req,resp) =>{
+const updateCustomer = async (req, resp) => {
+    try {
+        const {name, address, salary, contact} = req.body;
 
-    try{
-        const {name,address,salary,contact} = req.body;
+        const updatedData = await Customer.findByIdAndUpdate(
+            req.params.id,
+            {name, address, salary, contact},
+            {new: true}
+        );
 
-        const deletedData =  Customer.findByIdAndDelete({_id:req.params.id});
+        if (!updatedData) return resp.status(404).json({'message': 'Customer not found'});
 
+        resp.status(200).json({message: 'Customer Updated.', data: updatedData});
 
-        if(!deletedData) return resp.status(500).json({'message':'try Again'});
-
-        resp.status(204).json({message:'Customer Deleted.'});
-
-    }catch (e) {
-        resp.status(500).json({'message': 'Customer Deleted error',error:e});
+    } catch (e) {
+        resp.status(500).json({'message': 'Customer updated error', error: e.message});
     }
-
 };
 
-const findCustomerById = async (req,resp) =>{
+const deleteCustomer = async (req, resp) => {
+    try {
+        const deletedData = await Customer.findByIdAndDelete(req.params.id);
 
-    try{
-        const selectedCustomer = await Customer.findOne({_id:req.params.id});
+        if (!deletedData) return resp.status(404).json({'message': 'Customer not found'});
 
+        resp.status(200).json({message: 'Customer Deleted.'});
 
-        if(!selectedCustomer) return resp.status(404).json({'message':'Not Found'});
-
-        resp.status(200).json({message:'Customer Data.',data:selectedCustomer});
-
-    }catch (e) {
-        resp.status(500).json({'message': 'Customer find error',error:e});
+    } catch (e) {
+        resp.status(500).json({'message': 'Customer Delete error', error: e.message});
     }
-
 };
 
-const loadAllCustomer = async (req,resp) =>{
+const findCustomerById = async (req, resp) => {
+    try {
+        const selectedCustomer = await Customer.findById(req.params.id);
 
-    try{
-        const customers =  Customer.find();
-        resp.status(200).json({message:'Customer Data.',dataList:customers});
+        if (!selectedCustomer) return resp.status(404).json({'message': 'Not Found'});
 
-    }catch (e) {
-        resp.status(500).json({'message': 'Customer find error',error:e});
+        resp.status(200).json({message: 'Customer Data.', data: selectedCustomer});
+
+    } catch (e) {
+        resp.status(500).json({'message': 'Customer find error', error: e.message});
     }
-
 };
 
-module.exports={createCustomer,updateCustomer,deleteCustomer,findCustomerById,loadAllCustomer};
+const loadAllCustomer = async (req, resp) => {
+    try {
+        const customers = await Customer.find();
+        console.log('Loaded customers:', customers); // <-- log the data to check
+        resp.status(200).json({ message: 'Customer Data.', dataList: customers });
+    } catch (e) {
+        console.error('Error in loadAllCustomer:', e); // <-- log full error
+        resp.status(500).json({
+            message: 'Customer find error',
+            error: e.toString() // <-- ensure error is not empty
+        });
+    }
+};
 
+module.exports = {
+    createCustomer,
+    updateCustomer,
+    deleteCustomer,
+    findCustomerById,
+    loadAllCustomer
+};

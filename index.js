@@ -5,10 +5,23 @@ require('dotenv').config({
     quiet: true
 });
 const mongoose = require('mongoose');
+let cors = require('cors')
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// app.use(cors())
+
+app.use(cors({
+    origin: 'https://customer-management-client.wuaze.com',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
+
+app.options('*', cors());
+
 
 const UserRoute = require('./routes/UserRoute');
 const CustomerRoute = require('./routes/CustomerRoute');
@@ -20,6 +33,7 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://pasanmeth123_db_user:T
 
 mongoose.connect(MONGO_URI).then(()=>{
     console.log('Mongo DB Connected ...');
+    console.log('Mongo URI:', process.env.MONGO_URI);
 
     app.listen(PORT, () => {
         console.log(`Server Started and Running on port ${PORT}`)
