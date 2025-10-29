@@ -10,6 +10,7 @@ const createCustomer = async (req, resp) => {
         resp.status(201).json({message: 'Customer Saved.'});
 
     } catch (e) {
+        console.error('❌ createCustomer error:', e);
         resp.status(500).json({'message': 'Customer error', error: e.message});
     }
 };
@@ -29,6 +30,7 @@ const updateCustomer = async (req, resp) => {
         resp.status(200).json({message: 'Customer Updated.', data: updatedData});
 
     } catch (e) {
+        console.error('❌ updateCustomer error:', e);
         resp.status(500).json({'message': 'Customer updated error', error: e.message});
     }
 };
@@ -42,6 +44,7 @@ const deleteCustomer = async (req, resp) => {
         resp.status(200).json({message: 'Customer Deleted.'});
 
     } catch (e) {
+        console.error('❌ deleteCustomer error:', e);
         resp.status(500).json({'message': 'Customer Delete error', error: e.message});
     }
 };
@@ -55,20 +58,31 @@ const findCustomerById = async (req, resp) => {
         resp.status(200).json({message: 'Customer Data.', data: selectedCustomer});
 
     } catch (e) {
+        console.error('❌ findCustomerById error:', e);
         resp.status(500).json({'message': 'Customer find error', error: e.message});
     }
 };
 
 const loadAllCustomer = async (req, resp) => {
     try {
+        console.log('🔍 loadAllCustomer called');
+        console.log('🔍 Request headers:', req.headers);
+        console.log('🔍 User email from token:', req.userEmail);
+
         const customers = await Customer.find();
-        console.log('Loaded customers:', customers); // <-- log the data to check
-        resp.status(200).json({ message: 'Customer Data.', dataList: customers });
+        console.log('✅ Loaded customers count:', customers.length);
+        console.log('✅ Customers:', JSON.stringify(customers, null, 2));
+
+        resp.status(200).json({
+            message: 'Customer Data.',
+            dataList: customers
+        });
     } catch (e) {
-        console.error('Error in loadAllCustomer:', e); // <-- log full error
+        console.error('❌ loadAllCustomer error:', e);
+        console.error('❌ Error stack:', e.stack);
         resp.status(500).json({
             message: 'Customer find error',
-            error: e.toString() // <-- ensure error is not empty
+            error: e.message
         });
     }
 };
