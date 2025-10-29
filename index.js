@@ -14,10 +14,13 @@ app.use(bodyParser.json());
 // app.use(cors())
 
 app.use(cors({
-    origin: 'https://customer-management-client.wuaze.com',
+    origin: [
+        'https://customer-management-client.wuaze.com', // Replace with your actual domain
+        'http://localhost:4200' // For local development
+    ],
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.options('*', cors());
